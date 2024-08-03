@@ -1,5 +1,9 @@
 [workspace]
 resolver = "2"
 members = [
-    "bundler"
+    "bundler",
+    "dino"
 ]
+
+[workspace.dependencies]
+bundler = { path = "bundler" }

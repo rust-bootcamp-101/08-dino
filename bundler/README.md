@@ -1,4 +1,4 @@
-crate功能：将TypeScript代码bundle成可供JS Runtime运行的JavaScript(IIFE格式)代码，webpack和swc已经具备了这样的功能，我们可以直接使用它们的能力
+crate功能：将TypeScript代码bundle成可供JS Runtime(如rquickjs)运行的JavaScript(IIFE格式)代码，webpack和swc已经具备了这样的功能，我们可以直接使用它们的能力
 
 [swc](https://swc.rs) 太复杂，学习成本太高
 
