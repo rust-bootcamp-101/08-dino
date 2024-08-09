@@ -5,6 +5,7 @@ edition = "2021"
 
 [dependencies]
 bundler = { workspace = true }
+dino-macros = { workspace = true }
 
 anyhow = "1.0.86"
 askama = "0.12.1"

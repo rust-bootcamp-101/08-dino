@@ -4,7 +4,7 @@ use clap::Parser;
 
 use crate::{
     build_project,
-    engine::{JsWorker, Request},
+    engine::{JsWorker, Req},
     CmdExecutor,
 };
 
@@ -18,7 +18,7 @@ impl CmdExecutor for RunOpts {
         let worker = JsWorker::try_new(&content)?;
 
         // TODO: normally this should run axum and let it load the worker
-        let req = Request::builder()
+        let req = Req::builder()
             .method("GET")
             .url("https://example.com")
             .headers(HashMap::new())

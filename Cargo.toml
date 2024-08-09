@@ -3,7 +3,8 @@ resolver = "2"
 members = [
     "bundler",
     "dino"
-]
+, "dino-macros"]
 
 [workspace.dependencies]
 bundler = { path = "bundler" }
+dino-macros = { path = "dino-macros" }
