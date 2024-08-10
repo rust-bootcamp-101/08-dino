@@ -1,14 +1,14 @@
 mod config;
 mod engine;
 mod error;
+mod middleware;
 mod router;
 
 pub use config::*;
 pub use engine::*;
 pub use error::*;
-use matchit::Match;
+pub use middleware::*;
 pub use router::*;
-use tracing::info;
 
 use std::collections::HashMap;
 
@@ -23,7 +23,9 @@ use axum::{
 };
 use dashmap::DashMap;
 use indexmap::IndexMap;
+use matchit::Match;
 use tokio::net::TcpListener;
+use tracing::info;
 
 // indexmap 保证路由的注册顺序不变
 pub type ProjectRoutes = IndexMap<String, Vec<ProjectRoute>>;
@@ -53,16 +55,16 @@ pub async fn start_server(port: u16, routers: Vec<TennetRouter>) -> Result<()> {
     let app = Router::new()
         .route("/*path", any(handler))
         .with_state(state);
+    let app = set_layer(app);
     axum::serve(listener, app.into_make_service()).await?;
     Ok(())
 }
 
 // we only support JSON requests and return JSON responses
-#[allow(unused)]
 async fn handler(
     State(state): State<AppState>,
     parts: Parts,
-    Host(mut host): Host,
+    Host(host): Host,
     Query(query): Query<HashMap<String, String>>,
     body: Option<Bytes>,
 ) -> Result<impl IntoResponse, AppError> {
@@ -70,6 +72,9 @@ async fn handler(
     let matched = router.match_it(parts.method.clone(), parts.uri.path())?;
     let req = assemble_req(&parts, query, body, &matched)?;
     let handler = matched.value;
+
+    // TODO: build a worker pool, and send req via mpsc channel and get res from oneshot channel
+    // but if code change we need to recreate the worker pool
     let worker = JsWorker::try_new(&router.code)?;
     let res = worker.run(handler, req)?;
 
