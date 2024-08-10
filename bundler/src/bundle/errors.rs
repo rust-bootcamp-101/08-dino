@@ -48,6 +48,7 @@ pub struct JsError {
 }
 
 impl JsError {
+    #[allow(unused)]
     // https://github.com/denoland/rusty_v8/blob/0d093a02f658781d52e6d70d138768fc19a79d54/examples/shell.rs#L158
     pub fn from_v8_exception<'a>(
         scope: &'a mut v8::HandleScope,
