@@ -1,6 +1,7 @@
 use std::{
     collections::BTreeSet,
     fs::{self, File},
+    io,
     path::{Path, PathBuf},
 };
 
@@ -42,6 +43,7 @@ pub(crate) fn build_project(dir: &str) -> Result<String> {
     let hash = calc_project_hash(dir)?;
     // 注意生成的文件使用.mjs 目的是为了避免与.js文件 会被拿去build，导致生成的文件也会被拿去build
     let filename = format!("{}/{}.mjs", BUILD_DIR, hash);
+    let config = format!("{}/{}.yml", BUILD_DIR, hash);
 
     // if the file already exists, skip building
     let dst = Path::new(&filename);
@@ -52,6 +54,10 @@ pub(crate) fn build_project(dir: &str) -> Result<String> {
     // build the project
     let content = run_bundle("main.ts", &Default::default())?;
     fs::write(dst, content)?;
+    let mut dst = File::create(&config)?;
+    let mut src = File::open("config.yml")?;
+    io::copy(&mut src, &mut dst)?;
+
     Ok(filename)
 }
 
