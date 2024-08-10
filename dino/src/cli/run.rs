@@ -1,12 +1,9 @@
-use std::{collections::HashMap, fs};
+use std::fs;
 
 use clap::Parser;
+use dino_server::{JsWorker, Req};
 
-use crate::{
-    build_project,
-    engine::{JsWorker, Req},
-    CmdExecutor,
-};
+use crate::{build_project, CmdExecutor};
 
 #[derive(Debug, Parser)]
 pub struct RunOpts {}
@@ -21,7 +18,6 @@ impl CmdExecutor for RunOpts {
         let req = Req::builder()
             .method("GET")
             .url("https://example.com")
-            .headers(HashMap::new())
             .build();
         let ret = worker.run("hello", req)?;
         println!("Response: {:?}", ret);

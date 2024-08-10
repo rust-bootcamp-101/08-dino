@@ -10,6 +10,7 @@ members = [
 [workspace.dependencies]
 bundler = { path = "bundler" }
 dino-macros = { path = "dino-macros" }
+dino-server = { path = "dino-server" }
 
 
 serde = { version = "1.0.205", features = ["derive"] }
