@@ -1,7 +1,7 @@
 use std::{
     collections::BTreeSet,
     fs::{self, File},
-    io,
+    io::{self},
     path::{Path, PathBuf},
 };
 
@@ -23,7 +23,7 @@ pub(crate) fn get_files_with_exts(dir: &str, exts: &[&str]) -> Result<BTreeSet<P
 }
 
 pub(crate) fn calc_project_hash(dir: &str) -> Result<String> {
-    let hash = calc_hash_for_files(dir, &["ts", "js", "json"], 16)?;
+    let hash = calc_hash_for_files(dir, &["ts", "js", "json", "yml"], 16)?;
     Ok(hash)
 }
 
@@ -57,7 +57,6 @@ pub(crate) fn build_project(dir: &str) -> Result<String> {
     let mut dst = File::create(&config)?;
     let mut src = File::open("config.yml")?;
     io::copy(&mut src, &mut dst)?;
-
     Ok(filename)
 }
 
