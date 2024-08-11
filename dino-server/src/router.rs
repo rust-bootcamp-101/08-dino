@@ -6,6 +6,8 @@ use std::{ops::Deref, sync::Arc};
 
 use crate::{AppError, ProjectRoutes};
 
+// arcswap 类似于golang的atomic.Value，适用场景，数据的修改次数非常少，
+// 且每次修改都重建的代价不大，直接原子内存替换，如果经常修改，且重建数据代价特别大，请使用dashmap
 #[derive(Clone)]
 pub struct SwappableAppRouter {
     pub inner: Arc<ArcSwap<AppRouterInner>>,

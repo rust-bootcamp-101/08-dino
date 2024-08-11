@@ -14,7 +14,7 @@ pub struct JsWorker {
 }
 
 #[derive(Debug, TypedBuilder, IntoJs)]
-pub struct Req {
+pub struct Req<T> {
     #[builder(default)]
     pub query: HashMap<String, String>,
     #[builder(default)]
@@ -26,15 +26,14 @@ pub struct Req {
     #[builder(setter(into))]
     pub url: String,
     #[builder(default)]
-    pub body: Option<String>,
+    pub body: Option<T>,
 }
 
-#[allow(unused)]
 #[derive(Debug, FromJs)]
-pub struct Res {
+pub struct Res<T> {
     pub status: u16,
     pub headers: HashMap<String, String>,
-    pub body: Option<String>,
+    pub body: Option<T>,
 }
 
 // fn print(msg: String) {
@@ -59,7 +58,11 @@ impl JsWorker {
         Ok(Self { rt, ctx })
     }
 
-    pub fn run(&self, name: &str, req: Req) -> Result<Res> {
+    pub fn run<T>(&self, name: &str, req: Req<T>) -> Result<Res<T>>
+    where
+        T: for<'js> rquickjs::IntoJs<'js>,
+        T: for<'js> rquickjs::FromJs<'js>,
+    {
         self.ctx.with(|ctx| {
             let global = ctx.globals();
             let handlers: Object = global.get("handlers")?;
@@ -71,8 +74,8 @@ impl JsWorker {
     }
 }
 
-impl From<Res> for Response {
-    fn from(res: Res) -> Self {
+impl From<Res<String>> for Response {
+    fn from(res: Res<String>) -> Self {
         let mut builder = Response::builder().status(res.status);
         for (k, v) in res.headers {
             builder = builder.header(k, v);
@@ -105,7 +108,7 @@ mod tests {
             return{hello:hello};
         })()"#;
 
-        let req = Req::builder()
+        let req: Req<String> = Req::builder()
             .method("GET")
             .url("https://example.com")
             .headers(HashMap::new())

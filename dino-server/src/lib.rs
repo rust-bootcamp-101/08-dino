@@ -74,7 +74,7 @@ async fn handler(
     let handler = matched.value;
 
     // TODO: build a worker pool, and send req via mpsc channel and get res from oneshot channel
-    // but if code change we need to recreate the worker pool
+    // but if code change we need to recreate the worker
     let worker = JsWorker::try_new(&router.code)?;
     let res = worker.run(handler, req)?;
 
@@ -109,7 +109,7 @@ fn assemble_req(
     query: HashMap<String, String>,
     body: Option<Bytes>,
     matched: &Match<&str>,
-) -> Result<Req, AppError> {
+) -> Result<Req<String>, AppError> {
     let params: HashMap<String, String> = matched
         .params
         .iter()

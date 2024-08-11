@@ -11,3 +11,12 @@ Content-Type: application/json
 
 ### dino run
 GET http://localhost:3000/api/hello
+
+### dino run say
+POST http://localhost:3000/api/say
+Content-Type: application/json
+
+{
+    "name": "abc",
+    "id": 12
+}
