@@ -52,6 +52,8 @@ pub(crate) fn build_project(dir: &str) -> Result<String> {
         return Ok(filename);
     }
 
+    remove_dir_contents(BUILD_DIR)?;
+
     // build the project
     let content = run_bundle("main.ts", &Default::default())?;
     fs::write(dst, content)?;
@@ -59,6 +61,14 @@ pub(crate) fn build_project(dir: &str) -> Result<String> {
     let mut src = File::open("config.yml")?;
     io::copy(&mut src, &mut dst)?;
     Ok(filename)
+}
+
+// https://stackoverflow.com/questions/65573245/
+fn remove_dir_contents<P: AsRef<Path>>(path: P) -> io::Result<()> {
+    for entry in fs::read_dir(path)? {
+        fs::remove_file(entry?.path())?;
+    }
+    Ok(())
 }
 
 #[cfg(test)]
