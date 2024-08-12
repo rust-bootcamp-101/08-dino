@@ -39,6 +39,7 @@ pub(crate) fn calc_hash_for_files(dir: &str, exts: &[&str], expect_len: usize) -
 }
 
 pub(crate) fn build_project(dir: &str) -> Result<String> {
+    fs::remove_dir_all(BUILD_DIR)?;
     fs::create_dir_all(BUILD_DIR)?;
     let hash = calc_project_hash(dir)?;
     // 注意生成的文件使用.mjs 目的是为了避免与.js文件 会被拿去build，导致生成的文件也会被拿去build
